@@ -1,0 +1,41 @@
+https://turbo.build/repo/docs/getting-started/create-new
+
+pnpm dlx create-turbo@latest
+
+eslint-config-custom/index.js
+-----
+module.exports = {
+  extends: ["next", "turbo", "airbnb", "airbnb-typescript", "prettier"],
+  rules: {
+    "@next/next/no-html-link-for-pages": "off",
+    "react/jsx-key":"off",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+    "import/prefer-default-export":"off",
+    "import/prefer-default-export":"warn",
+    "react/jsx-props-no-spreading": "off"
+  },
+  parserOptions: {
+    babelOptions: {
+      presets: [require.resolve("next/babel")],
+    },
+  },
+};
+-----
+
+pnpm i husky -D -w
+pnpm husky add husky/pre-commit "pnpm test"
+
+-----
+
+husky pre-commit:
+
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+pnpm lint
+pnpm test
+
+-----
+
+pnpm install react-hook-form -w
