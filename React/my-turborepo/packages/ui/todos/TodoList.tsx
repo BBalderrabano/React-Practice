@@ -1,18 +1,20 @@
+"use client"
+
 import React from "react";
 
-import { Todo } from "../../my-types";
+import { Todo, TodoAction } from "../../my-types";
 import SingleTodo from "./SingleTodo";
 
 interface Props {
   todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  dispatch: React.Dispatch<TodoAction>;
 }
 
-const TodoList: React.FC<Props> = ({ todos, setTodos }: Props) => {
+const TodoList: React.FC<Props> = ({ todos, dispatch }: Props) => {
   return (
     <>
       {todos.map((t) => (
-        <SingleTodo todo={t} todos={todos} setTodos={setTodos} key={t.id}/>
+        <SingleTodo todo={t} dispatch={dispatch} key={t.id}/>
       ))}
     </>
   );

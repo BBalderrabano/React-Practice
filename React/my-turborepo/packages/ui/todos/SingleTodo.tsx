@@ -1,29 +1,22 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
-import { Todo } from "../../my-types";
+import { Todo, TodoAction, TodoActions } from "../../my-types";
 
 interface Props {
   todo: Todo;
-  todos: Todo[];
-  setTodos: React.Dispatch<React.SetStateAction<Todo[]>>;
+  dispatch: React.Dispatch<TodoAction>;
 }
 
-const SingleTodo: React.FC<Props> = ({ todo, todos, setTodos }) => {
+const SingleTodo: React.FC<Props> = ({ todo, dispatch }) => {
   const [edit, setEdit] = useState<boolean>(false);
-  const [editTodo, setEditTodo] = useState<string>(todo.todo);
+  const [editTodo, setEditTodo] = useState<string>(todo.title);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleDone = (id: number) => {
-    setTodos(todos.map((t) => (t.id === id ? { ...t, isDone: !t.isDone } : t)));
-  };
-
-  const handleDelete = (id: number) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  };
-
-  const handleEdit = (id: number, e: React.FormEvent) => {
+  const handleEdit = (e: React.FormEvent) => {
     e.preventDefault();
-    setTodos(todos.map((t) => (t.id === id ? { ...t, todo: editTodo } : t)));
+    dispatch({ id: todo.id, type: TodoActions.UPDATE, payload: editTodo });
     setEdit(false);
   };
 
@@ -33,7 +26,7 @@ const SingleTodo: React.FC<Props> = ({ todo, todos, setTodos }) => {
 
   return (
     <li>
-      <form onSubmit={(e) => handleEdit(todo.id, e)}>
+      <form onSubmit={(e) => handleEdit(e)}>
         {edit ? (
           <input
             ref={inputRef}
@@ -44,9 +37,9 @@ const SingleTodo: React.FC<Props> = ({ todo, todos, setTodos }) => {
             onBlur={() => setEdit(false)}
           ></input>
         ) : todo.isDone ? (
-          <s>{todo.todo}</s>
+          <s>{todo.title}</s>
         ) : (
-          <span>{todo.todo}</span>
+          <span>{todo.title}</span>
         )}
 
         <div>
@@ -62,14 +55,18 @@ const SingleTodo: React.FC<Props> = ({ todo, todos, setTodos }) => {
             e{" "}
           </span>
           <span
-            onClick={() => handleDone(todo.id)}
+            onClick={() => {
+              dispatch({ id: todo.id, type: TodoActions.TOGGLE });
+            }}
             style={{ cursor: "pointer" }}
           >
             {" "}
             +{" "}
           </span>
           <span
-            onClick={() => handleDelete(todo.id)}
+            onClick={() => {
+              dispatch({ id: todo.id, type: TodoActions.DELETE });
+            }}
             style={{ cursor: "pointer" }}
           >
             {" "}
